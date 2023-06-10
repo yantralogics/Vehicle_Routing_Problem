@@ -1,0 +1,15 @@
+## reset the environment
+
+reset;
+
+# Load the model 
+model example1.mod
+
+# Change the solver 
+option solver cbc;
+
+# solve 
+solve;
+
+## display the results 
+display x1, x2, z;

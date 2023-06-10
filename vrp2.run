@@ -1,0 +1,15 @@
+reset;
+
+# Load the model 
+model vrp2.mod
+
+## load the data 
+data vrp2.dat
+# Change the solver 
+option solver cbc;
+
+# solve 
+solve;
+
+## display the results 
+display x,u;
