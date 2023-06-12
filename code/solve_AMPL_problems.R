@@ -8,7 +8,7 @@ ampl <- new(AMPL,env)
 
 ## read files 
  #model file 
- ampl$read('vrp2.mod')
+ ampl$read('models/vrp2.mod')
 #data file
  ampl$readData(here::here('data/A-n32-k05.dat'))
 ## Specify the solver 
