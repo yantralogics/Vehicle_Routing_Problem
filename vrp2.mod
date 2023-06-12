@@ -16,7 +16,7 @@ param c{A}>=0;
 param d{1..n};
 
 # decision variable
-var x{A} binary;
+var x{A}>=0 binary;
 # additional decision variable to remove subtours per MTZ formulation
 var u{1..n} >=0;
 
