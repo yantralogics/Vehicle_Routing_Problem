@@ -11,18 +11,21 @@ ampl <- new(AMPL,env)
  ampl$read('models/vrp2.mod')
 #data file
  ampl$readData(here::here('data/A-n32-k05.dat'))
- # ampl$readData(here::here('data/M-n101-k10.dat'))
+#  ampl$readData(here::here('data/M-n101-k10.dat'))
 # ampl$readData(here::here('models/vrp2.dat'))
 ## Specify the solver 
- ampl$setOption("solver", 'cbc')
- ampl$setOption('cbc_options','ratioGap=0.1')
- # ampl$setOption('cbc_options','timelim=50')
- # ampl$setOption('cbc_options','mipgap=0.1')
+ ampl$setOption("solver", 'scip')
+ampl$setOption('scip_options','gap=0.05')
+ # ampl$setOption('cbc_options','gmicuts=on')
+  # ampl$setOption('cbc_options','ratioGap=0.1')
  #ampl$setOption('timelim',5)
 ampl$solve()
 
 # Get the values of the variable Buy in a dataframe object
 buy <- ampl$getVariable("x")
 df <- buy$getValues()
+
+Obj = ampl$getObjective('cost')$getValues()
+print(Obj)
 # Print them
 # print(df)
