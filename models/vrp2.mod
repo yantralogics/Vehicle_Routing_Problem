@@ -9,7 +9,7 @@ param C >=0;
 # Create the set for all the nodes - 1 indicating the depot
 set N :=1..n;
 # Create the set of arcs 
-set A :={i in N,j in N:i<>j};
+set A :={i in N,j in N};
 
 param c{A}>=0;
 # d = demand vector at all the cities except for the depot 

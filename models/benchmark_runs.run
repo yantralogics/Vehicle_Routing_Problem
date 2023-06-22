@@ -1,0 +1,19 @@
+reset;
+
+# Load the model 
+model vrp2.mod
+
+## load the data 
+data A-n32-k05.dat
+# Change the solver 
+option solver highs;
+#option scip_options 'timelim=600 gap=0.1';
+
+option highs_options 'timelim=1200 relgaptol=0.1';
+#option cbc_options 'ratioGap=0.3 timelim=600';
+
+# solve 
+solve;
+
+## display the results 
+display x,u,cost;

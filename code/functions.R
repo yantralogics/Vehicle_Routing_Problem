@@ -19,7 +19,11 @@ getVRPBenchmark <- function(filepath,filename){
   distMat= matrix(0,nrow = nrow(nodeDF),ncol = nrow(nodeDF))
   for(i in 1:nrow(nodeDF)){
     for(j in 1:nrow(nodeDF)){
-      distMat[i,j]=sqrt(nodeDF$cx[i]^2 + nodeDF$cy[j]^2)
+      #distMat[i,j]=sqrt(nodeDF$cx[i]^2 + nodeDF$cy[j]^2)
+      if(i!=j){
+        distMat[i,j]=sqrt((nodeDF$cx[j]-nodeDF$cx[i])^2 + (nodeDF$cy[j]- nodeDF$cy[i])^2)  
+      }
+      
     }
   }
   
@@ -50,4 +54,27 @@ writeVRPDataFile <- function(data,filename){
   writeLines(';',f1)
   close(f1)
   return(newfileName)
+}
+
+createRandomfile <- function(nCities,nTrucks,openEnds=F,openStarts = F){
+  ## Create a VRP file based on the cities and trucks 
+  Xcoords = runif(nCities,min = 10, max = 30)
+  Ycoords = runif(nCities, min = 20, max = 40)
+  
+  distMat=  dist(matrix(data = c(Xcoords,Ycoords), nrow = nCities,ncol = 2),
+                 method = 'euclidian',
+                 diag = T,
+                 upper = T)
+  
+  data = list()
+  data$distMat = as.matrix(distMat)
+  data$vehicles = nTrucks
+  data$nodesDemand = c(0,as.integer(runif(nCities-1,min=0,max = 10)))
+  # hard coded for now 
+  data$Capacity = 50
+  data$filename = paste0('testFile-','n',nCities,'-k',nTrucks,'.dat')
+  
+  writeVRPDataFile(data,data$filename)
+  
+  
 }

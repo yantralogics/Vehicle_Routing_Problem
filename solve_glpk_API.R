@@ -12,8 +12,8 @@ vrpp <- mplAllocWkspGLPK()
 rest <- mplReadModelGLPK(vrpp,  here::here('models/vrp2.mod'), skip=0)
 
 
-#rest <- mplReadDataGLPK(vrpp,here::here('models/vrp2.dat'))
-rest <- mplReadDataGLPK(vrpp,here::here('data/A-n32-k05.dat'))
+rest <- mplReadDataGLPK(vrpp,here::here('models/testFile-n30-k4.dat'))
+#rest <- mplReadDataGLPK(vrpp,here::here('data/A-n32-k05.dat'))
 
 result <- mplGenerateGLPK(vrpp)
 rest <- mplBuildProbGLPK(vrpp,prob1)
