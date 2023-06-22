@@ -1,0 +1,15 @@
+reset;
+
+# Load the model 
+model oovrp.mod
+
+## load the data 
+data oovrp.dat
+# Change the solver 
+option solver cbc;
+
+# solve 
+solve;
+
+## display the results 
+display x,u;
