@@ -9,8 +9,8 @@ data A-n32-k05.dat
 option solver cbc;
 #option scip_options 'timelim=600 gap=0.1';
 
-option highs_options 'timelim=1200 relgaptol=0.1';
-option cbc_options 'ratioGap=0.3 timelim=1200';
+#option highs_options 'timelim=1200 relgaptol=0.1';
+option cbc_options 'timelim=1200';
 
 # solve 
 solve;
