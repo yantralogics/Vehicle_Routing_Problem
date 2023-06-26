@@ -1,0 +1,81 @@
+---
+title: "Capacitated Vehicle Routing Problem - 3 index formulation"
+author: "Yantralogics LLC"
+date: "2023-06-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 3 index Vehicle Routing Problem formulation
+
+While 2 index VRP formulation is relatively straight forward to implement, it cannot be extended to more complex versions of the VRP. For instance, in the 2 index formulation, we assumed that the capacity of all the trucks is same. In reality that might not be the case. It can be argued that in case there was an explicit index for the trucks, this problem could be solved. 
+
+So let's define a variable $x_{ijk}$ takes the value 1 if vehicle $k$ and  arc $(i,j) \in A$ belongs to the optimal solution and takes value 0 otherwise.You might have noticed that now the computation complexity increased to $O(n^2K)$ In addition to this decision variable, we will introduce $O(nK)$ variable $y_{ik}:(i \in V, k=1..K)$ that takes value 1 if customer $i$ is served by vehicle $k$ in the optimal solution and takes the value 0 otherwise. 
+
+We designate cost of travelling on arc $(i,j)$ with $c_{ij}$. In this formulation, the vehicles share a common capacity value $C$. The demand/load at each city is designated by $d_i$. Unless otherwise stated, we will consider node $\{0\}$ to be the origin and final destination. The number of trucks are designated by $K$.
+
+It stands to reason that simplest way to define the cost function is to sum the distance traveled by all the vehicles and all the arcs covered.
+
+$$min \sum_{i \in V} \sum_{j \in V} c_{ij} \sum_{k=1}^{K} x_{ijk}$$
+subject to
+
+
+$$\sum_{k=1}^{K}y_{ik}=1, \forall i \in V \setminus \{0\},$$
+This assures that each city is reached by exactly 1 truck, except for the depot.
+$$\sum_{k=1}^{K}y_{0k}=K, $$
+This assures that exactly $K$ trucks are reached by the depot.
+
+$$\sum_{j \in V}x_{ijk}=\sum_{j \in V}x_{jik} = y_{ik},\\ \forall i \in V, k = 1,...,K,$$
+This is a bit tricky, we want to make sure that truck that enters the city, same truck leaves the city. Notice the double equality constraint here, when we try to implement this in AMPL, we will need to break it apart. 
+
+And finally the subtour elimination constraint based on MTZ formulation written to include $k$ index in variable $u_{ik}$. Notice that given $k$ index, we can now allocate separate capacities of individual trucks $C_k, k= 1,...,K$.
+
+$$u_{ik}- u_{jk} + C_kx_{ijk}\le C_k - d_j,\\ \forall i,j \in V \setminus \{0\}, i \ne j, k = 1,...,K,$$
+
+$$d_i \le u_{ik} \le C_k,\\ \forall i \in V \setminus \{0\}, k = 1,...,K$$
+Note that for while going from 2 index to 3 index formulation, we went from $O(n^2 + n)$ to $O(n^2K+2nK)$ complexity. Needless to say that flexibility of having a dedicated index for the truck requires us to pay price on computation. 
+
+### AMPL Implementation
+```ampl
+## 3 index formulation 
+#number of customers
+param v; 
+
+#customers - where 1 is the depot
+set V:={1..v}; 
+#number of vehicles
+param l;
+
+set K=1..l; #number of vehicles
+param Distance{V,V};
+param Capacity{K};
+param Demand{V};
+var  x{i in V,j in V,k in K} ,binary;
+var y{i in V, k in K} binary;
+var  u{1..v, k in K} integer;
+
+# Objective setting : minimize the total distance travelled
+minimize obj: sum{k in K,i in V,j in V: i<>j} Distance[i,j]*x[i,j,k];
+
+# EAch vehicle entes the city exactly once
+subject to R1{i in 2..v}: sum{k in K}y[i,k]==1;
+
+subject to R2:sum{k in K}y[1,k]=l;
+
+
+subject to R31{i in V, k in K}:sum{j in V}x[i,j,k]=sum{j in V}x[j,i,k];
+
+subject to R32{i in V,k in K}:sum{j in V}x[j,i,k]=y[i,k];
+
+
+subject to R4{k in K}:sum{i in V}Demand[i]*y[i,k]<=Capacity[k];
+
+
+subject to R5{i in 2..v,j in 2..v, k in K}:u[i,k]-u[j,k]+Capacity[k]*x[i,j,k] <= Capacity[k]-Demand[j];
+
+subject to R6{i in 2..v, k in K}:Demand[i]<=u[i,k]<=Capacity[k];
+  
+```

@@ -3,10 +3,10 @@
 reset;
 
 # Load the model 
-model vrp3.mod
+model open_3ind.mod
 
 ## load the data 
-data vrp3.dat
+data open_3ind.dat
 # Change the solver 
 option solver cbc;
 
@@ -14,4 +14,4 @@ option solver cbc;
 solve;
 
 ## display the results 
-display x,y,u;
+display x,u,y;

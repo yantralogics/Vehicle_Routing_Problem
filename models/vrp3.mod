@@ -29,7 +29,7 @@ subject to R31{i in V, k in K}:sum{j in V}x[i,j,k]=sum{j in V}x[j,i,k];
 subject to R32{i in V,k in K}:sum{j in V}x[j,i,k]=y[i,k];
 
 
-subject to R4{k in K}:sum{i in V}Demand[i]*y[i,k]<=Capacity[k];
+#subject to R4{k in K}:sum{i in V}Demand[i]*y[i,k]<=Capacity[k];
 
 
 subject to R5{i in 2..v,j in 2..v, k in K}:u[i,k]-u[j,k]+Capacity[k]*x[i,j,k] <= Capacity[k]-Demand[j];
