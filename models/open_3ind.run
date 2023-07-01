@@ -14,4 +14,4 @@ option solver cbc;
 solve;
 
 ## display the results 
-display x,u,y;
+display x,u;
